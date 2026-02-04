@@ -1,4 +1,3 @@
-// app/peer-help/buddy/page.tsx
 
 import StudyBuddyPage from "./StudyBuddyPage";
 

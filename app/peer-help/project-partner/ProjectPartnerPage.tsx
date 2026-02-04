@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function ProjectPartnerPage() {
   const [selectedTopic, setSelectedTopic] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
   const [scrollY, setScrollY] = useState(0);
-  const heroRef = useRef<HTMLDivElement>(null);
-  const statsRef = useRef<HTMLDivElement>(null);
-  const [statsVisible, setStatsVisible] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   const topics = ["ML/AI", "Web Dev", "Gen AI", "Mobile Dev", "Blockchain", "IoT", "Game Dev", "Data Science"];
   const years = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
@@ -20,14 +20,11 @@ export default function ProjectPartnerPage() {
   }, []);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setStatsVisible(true);
-      },
-      { threshold: 0.3 }
-    );
-    if (statsRef.current) observer.observe(statsRef.current);
-    return () => observer.disconnect();
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
   const partners = [
@@ -115,16 +112,16 @@ export default function ProjectPartnerPage() {
           style={{ transform: `translateY(${scrollY * 0.05}px)` }}
         />
         <div 
-          className="absolute bottom-20 right-10 w-[500px] h-[500px] bg-gray-50 rounded-full blur-3xl opacity-50"
+          className="absolute bottom-20 right-10 w-[500px] h-[500px] bg-zinc-100 rounded-full blur-3xl opacity-50"
           style={{ animationDelay: '2s', transform: `translateY(${scrollY * 0.08}px)` }}
         />
       </div>
 
-      {/* Floating Particles */}
-      {[...Array(15)].map((_, i) => (
+      {/* Minimal Floating Particles */}
+      {[...Array(10)].map((_, i) => (
         <div
           key={i}
-          className="fixed w-1 h-1 bg-gray-400 rounded-full opacity-20 animate-float pointer-events-none"
+          className="fixed w-1 h-1 bg-black rounded-full opacity-10 animate-float pointer-events-none"
           style={{
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`,
@@ -136,259 +133,276 @@ export default function ProjectPartnerPage() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 py-8">
         
-        {/* Back Button */}
-        <a 
-          href="/buddy-matching" 
-          className="inline-flex items-center gap-2 text-zinc-600 hover:text-black transition-colors mb-6 group animate-fade-in-up"
-        >
-          <svg className="w-5 h-5 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          <span className="font-medium">Back to Matching</span>
-        </a>
-
-        {/* Hero Section - Reduced Height */}
-        <div 
-          ref={heroRef}
-          className="mb-12 animate-fade-in-up"
-        >
-          <div className="bg-gradient-to-br from-black via-zinc-900 to-zinc-800 rounded-[40px] p-8 md:p-10 shadow-2xl relative overflow-hidden group">
-            {/* Subtle overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-zinc-800/0 via-white/5 to-zinc-800/0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-
-            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-              <div className="flex-1 text-center md:text-left">
-                <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full mb-4 border border-white/20">
-                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                  <span className="text-white text-sm font-semibold">850+ Active Projects</span>
-                </div>
-                
-                <h1 className="text-4xl md:text-6xl font-black text-white mb-4 leading-tight">
-                  Find Your
-                  <span className="block text-gray-300">
-                    Project Partner
-                  </span>
-                </h1>
-                
-                <p className="text-gray-400 text-lg md:text-xl leading-relaxed max-w-2xl">
-                  Connect with talented developers who share your vision. Build amazing projects together and bring your ideas to life.
-                </p>
-              </div>
-
-              {/* Larger Image */}
-              <div className="relative w-80 h-80 md:w-[450px] md:h-[450px] flex-shrink-0">
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-700/30 to-gray-600/30 rounded-full blur-3xl" />
-                <div className="relative w-full h-full animate-float">
-                  <img
-                    src="/card22.png"
-                    alt="Project Partner"
-                    className="w-full h-full object-contain drop-shadow-2xl"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Stats Section */}
-        <div 
-          ref={statsRef}
-          className={`grid grid-cols-2 md:grid-cols-4 gap-6 mb-12 transition-all duration-1000 ${
-            statsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'
-          }`}
-        >
-          {[
-            { number: "850+", label: "Active Projects" },
-            { number: "2.5k+", label: "Developers" },
-            { number: "450+", label: "Teams Formed" },
-            { number: "95%", label: "Success Rate" }
-          ].map((stat, idx) => (
-            <div
-              key={idx}
-              className="bg-white rounded-3xl p-6 shadow-lg border-2 border-gray-200 hover:border-black hover:shadow-xl transition-all transform hover:-translate-y-2 group"
-              style={{ animationDelay: `${idx * 0.1}s` }}
-            >
-              <div className="text-4xl md:text-5xl font-black text-black mb-2 group-hover:scale-110 transition-transform">
-                {stat.number}
-              </div>
-              <div className="text-zinc-600 font-semibold">{stat.label}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Filters Section */}
-        <div className="bg-white rounded-3xl p-8 shadow-lg border-2 border-gray-200 mb-12 animate-fade-in-up">
-          <h2 className="text-3xl font-black text-black mb-6 flex items-center gap-3">
-            <svg className="w-8 h-8 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+        {/* Back Button & Header */}
+        <div className="mb-8 animate-fade-in-up">
+          <Link 
+            href="/buddy-matching" 
+            className="inline-flex items-center gap-2 text-zinc-600 hover:text-black transition-colors mb-6 group"
+          >
+            <svg className="w-5 h-5 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            Filter Projects
-          </h2>
+            <span className="font-medium">Back to Matching</span>
+          </Link>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Topic Filter */}
-            <div>
-              <label className="block text-sm font-bold text-zinc-900 mb-3">Topic</label>
-              <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={() => setSelectedTopic("")}
-                  className={`px-4 py-2 rounded-xl font-semibold text-sm transition-all transform hover:scale-105 ${
-                    selectedTopic === ""
-                      ? 'bg-black text-white shadow-lg'
-                      : 'bg-gray-100 text-zinc-700 hover:bg-gray-200'
-                  }`}
-                >
-                  All
-                </button>
-                {topics.map((topic) => (
-                  <button
-                    key={topic}
-                    onClick={() => setSelectedTopic(topic)}
-                    className={`px-4 py-2 rounded-xl font-semibold text-sm transition-all transform hover:scale-105 ${
-                      selectedTopic === topic
-                        ? 'bg-black text-white shadow-lg'
-                        : 'bg-gray-100 text-zinc-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {topic}
-                  </button>
-                ))}
-              </div>
+          {/* Header Section - Consistent size with buddy-matching */}
+          <div 
+            className="relative flex flex-col md:flex-row items-center justify-between gap-6 bg-black p-6 md:p-8 rounded-[50px] shadow-2xl overflow-hidden group"
+            style={{
+              transform: `perspective(1000px) rotateX(${(mousePosition.y - 400) * 0.005}deg) rotateY(${(mousePosition.x - 600) * 0.005}deg)`,
+            }}
+          >
+            {/* Shimmer overlay */}
+            <div className="absolute inset-0 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 animate-shimmer" />
             </div>
 
-            {/* Year Filter */}
-            <div>
-              <label className="block text-sm font-bold text-zinc-900 mb-3">Year</label>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  onClick={() => setSelectedYear("")}
-                  className={`px-4 py-3 rounded-xl font-semibold text-sm transition-all transform hover:scale-105 ${
-                    selectedYear === ""
-                      ? 'bg-black text-white shadow-lg'
-                      : 'bg-gray-100 text-zinc-700 hover:bg-gray-200'
-                  }`}
-                >
-                  All Years
-                </button>
-                {years.map((year) => (
+            <div className="max-w-lg z-10 relative">
+              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full mb-4 border border-white/20">
+                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                <span className="text-white text-sm font-semibold">850+ Active Projects</span>
+              </div>
+              
+              <h1 className="text-4xl md:text-5xl font-black text-white mb-3 tracking-tight">
+                Find Your Perfect
+                <span className="block text-gray-300">Project Partner</span>
+              </h1>
+              
+              <p className="text-gray-300 text-lg md:text-xl leading-relaxed font-light">
+                Connect with talented developers and build amazing projects together.
+              </p>
+            </div>
+
+            <div className="relative h-40 w-full md:h-48 md:w-[350px] flex justify-center items-center">
+              <div className="absolute inset-0 bg-white/10 rounded-full blur-2xl animate-pulse-shadow"></div>
+              <Image 
+                src="/card22.png" 
+                alt="Project Partner" 
+                fill 
+                className="object-contain drop-shadow-2xl animate-float relative z-10" 
+                priority
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content Grid */}
+        <div className="grid md:grid-cols-4 gap-6 mb-12">
+          
+          {/* Left Column - Filters */}
+          <div className="md:col-span-1 space-y-4">
+            
+            {/* Filters Card */}
+            <div className="bg-white rounded-2xl p-5 shadow-lg border-2 border-black animate-fade-in-up sticky top-4">
+              <h2 className="text-xl font-black text-black mb-5 flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                </svg>
+                Filter Projects
+              </h2>
+
+              {/* Topic Filter */}
+              <div className="mb-5">
+                <label className="block text-sm font-bold text-black mb-2">Topic</label>
+                <div className="flex flex-wrap gap-2">
                   <button
-                    key={year}
-                    onClick={() => setSelectedYear(year)}
-                    className={`px-4 py-3 rounded-xl font-semibold text-sm transition-all transform hover:scale-105 ${
-                      selectedYear === year
+                    onClick={() => setSelectedTopic("")}
+                    className={`px-3 py-2 rounded-lg font-semibold text-xs transition-all hover:scale-105 ${
+                      selectedTopic === ""
                         ? 'bg-black text-white shadow-lg'
-                        : 'bg-gray-100 text-zinc-700 hover:bg-gray-200'
+                        : 'bg-gray-100 text-black border border-gray-300 hover:bg-gray-200'
                     }`}
                   >
-                    {year}
+                    All
                   </button>
-                ))}
+                  {topics.map((topic) => (
+                    <button
+                      key={topic}
+                      onClick={() => setSelectedTopic(topic)}
+                      className={`px-3 py-2 rounded-lg font-semibold text-xs transition-all hover:scale-105 ${
+                        selectedTopic === topic
+                          ? 'bg-black text-white shadow-lg'
+                          : 'bg-gray-100 text-black border border-gray-300 hover:bg-gray-200'
+                      }`}
+                    >
+                      {topic}
+                    </button>
+                  ))}
+                </div>
               </div>
+
+              {/* Year Filter */}
+              <div className="mb-5">
+                <label className="block text-sm font-bold text-black mb-2">Year</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => setSelectedYear("")}
+                    className={`px-3 py-2 rounded-lg font-semibold text-sm transition-all hover:scale-105 ${
+                      selectedYear === ""
+                        ? 'bg-black text-white shadow-lg'
+                        : 'bg-gray-100 text-black border border-gray-300 hover:bg-gray-200'
+                    }`}
+                  >
+                    All Years
+                  </button>
+                  {years.map((year) => (
+                    <button
+                      key={year}
+                      onClick={() => setSelectedYear(year)}
+                      className={`px-3 py-2 rounded-lg font-semibold text-sm transition-all hover:scale-105 ${
+                        selectedYear === year
+                          ? 'bg-black text-white shadow-lg'
+                          : 'bg-gray-100 text-black border border-gray-300 hover:bg-gray-200'
+                      }`}
+                    >
+                      {year}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <button className="w-full bg-black text-white font-bold py-3 rounded-lg hover:bg-zinc-800 transition-all shadow-lg hover:shadow-xl transform hover:scale-105">
+                Apply Filters
+              </button>
+
+              <button 
+                onClick={() => {
+                  setSelectedTopic("");
+                  setSelectedYear("");
+                }}
+                className="w-full mt-2 text-zinc-700 font-semibold py-2 rounded-lg hover:bg-gray-100 transition-all text-sm border border-gray-300"
+              >
+                Clear All
+              </button>
             </div>
           </div>
 
-          <div className="mt-6 flex items-center justify-between">
-            <p className="text-sm text-zinc-600">
-              Showing <span className="font-bold text-black">{filteredPartners.length}</span> projects
-            </p>
-            <button 
-              onClick={() => {
-                setSelectedTopic("");
-                setSelectedYear("");
-              }}
-              className="text-sm font-semibold text-black hover:text-zinc-700 transition-colors underline"
-            >
-              Clear Filters
+          {/* Right Column - Partner Cards Grid */}
+          <div className="md:col-span-3">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-black text-black">
+                Available Partners
+                <span className="ml-2 text-base font-normal text-zinc-600">({filteredPartners.length} projects)</span>
+              </h2>
+              
+              <div className="flex gap-2">
+                <button className="p-2 rounded-lg bg-white border-2 border-black hover:bg-gray-100 transition-all">
+                  <svg className="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                </button>
+                <button className="p-2 rounded-lg bg-white border-2 border-black hover:bg-gray-100 transition-all">
+                  <svg className="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Partner Cards Grid - 3 columns */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {filteredPartners.map((partner, idx) => (
+                <div
+                  key={partner.id}
+                  className="bg-white rounded-2xl p-5 shadow-lg border-2 border-black hover:shadow-2xl transition-all group animate-fade-in-up hover:-translate-y-2 flex flex-col"
+                  style={{ animationDelay: `${0.05 * idx}s` }}
+                >
+                  {/* Avatar */}
+                  <div className="relative mb-4">
+                    <div className="w-full aspect-square rounded-2xl bg-black overflow-hidden border-4 border-gray-200 group-hover:border-black transition-all">
+                      <Image
+                        src={partner.image}
+                        alt={partner.name}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                    </div>
+                    <div className="absolute -bottom-3 -right-3 px-3 py-1 bg-black text-white text-xs font-black rounded-lg shadow-lg">
+                      {partner.topic}
+                    </div>
+                  </div>
+
+                  {/* Info */}
+                  <div className="flex-1 flex flex-col">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1">
+                        <h3 className="text-lg font-black text-black group-hover:underline line-clamp-1">
+                          {partner.name}
+                        </h3>
+                        <p className="text-sm text-zinc-600 font-semibold">{partner.year} • {partner.college}</p>
+                      </div>
+                      <button className="p-2 hover:bg-gray-100 rounded-lg transition-all border border-gray-300 flex-shrink-0">
+                        <svg className="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                        </svg>
+                      </button>
+                    </div>
+
+                    <p className="text-sm text-zinc-700 mb-4 line-clamp-3 font-medium flex-1">
+                      {partner.description}
+                    </p>
+
+                    {/* Tech Stack */}
+                    <div className="mb-3">
+                      <p className="text-xs font-black text-black mb-2">Tech Stack:</p>
+                      <div className="flex flex-wrap gap-1">
+                        {partner.techStack.slice(0, 3).map((tech, i) => (
+                          <span
+                            key={i}
+                            className="px-2 py-1 bg-gray-100 text-black text-xs font-bold rounded-lg border border-gray-300"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                        {partner.techStack.length > 3 && (
+                          <span className="px-2 py-1 text-zinc-600 text-xs font-semibold">
+                            +{partner.techStack.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Looking For */}
+                    <div className="mb-4">
+                      <p className="text-xs font-black text-black mb-2">Looking for:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {partner.lookingFor.map((skill, i) => (
+                          <span
+                            key={i}
+                            className="px-2 py-1 bg-black text-white text-xs font-black rounded-full shadow-md"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Action Button */}
+                    <button className="w-full bg-black text-white font-bold py-3 rounded-xl hover:bg-zinc-800 transition-all shadow-lg hover:shadow-xl transform hover:scale-105 mt-auto">
+                      Get in Touch
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Load More */}
+            <button className="w-full mt-6 py-3 bg-white border-2 border-black text-black font-bold rounded-lg hover:bg-gray-100 transition-all shadow-lg hover:shadow-xl">
+              Load More Partners
             </button>
           </div>
         </div>
 
-        {/* Partners Grid */}
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
-          {filteredPartners.map((partner, idx) => (
-            <div
-              key={partner.id}
-              className="bg-white rounded-3xl p-6 shadow-lg border-2 border-gray-200 hover:border-black hover:shadow-xl transition-all transform hover:-translate-y-2 group animate-fade-in-up"
-              style={{ animationDelay: `${idx * 0.1}s` }}
-            >
-              {/* Profile Section */}
-              <div className="flex items-center gap-4 mb-4">
-                <div className="relative w-20 h-20 rounded-2xl overflow-hidden border-4 border-gray-200 group-hover:border-black transition-all">
-                  <img
-                    src={partner.image}
-                    alt={partner.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform"
-                  />
-                </div>
-                <div>
-                  <h3 className="text-xl font-black text-black group-hover:underline transition-all">
-                    {partner.name}
-                  </h3>
-                  <p className="text-sm text-zinc-500 font-medium">{partner.year} • {partner.college}</p>
-                </div>
-              </div>
-
-              {/* Topic Badge */}
-              <div className="mb-4">
-                <span className="inline-block px-3 py-1 bg-gray-100 text-black text-xs font-bold rounded-full border border-gray-300">
-                  {partner.topic}
-                </span>
-              </div>
-
-              {/* Description */}
-              <p className="text-zinc-600 text-sm mb-4 line-clamp-3 leading-relaxed">
-                {partner.description}
-              </p>
-
-              {/* Tech Stack */}
-              <div className="mb-4">
-                <p className="text-xs font-bold text-zinc-900 mb-2">Tech Stack:</p>
-                <div className="flex flex-wrap gap-2">
-                  {partner.techStack.map((tech, i) => (
-                    <span
-                      key={i}
-                      className="px-2 py-1 bg-gray-100 text-zinc-700 text-xs font-semibold rounded-lg border border-gray-300"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Looking For */}
-              <div className="mb-6">
-                <p className="text-xs font-bold text-zinc-900 mb-2">Looking for:</p>
-                <div className="flex flex-wrap gap-2">
-                  {partner.lookingFor.map((skill, i) => (
-                    <span
-                      key={i}
-                      className="px-3 py-1 bg-black text-white text-xs font-bold rounded-full"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Get in Touch Button */}
-              <button className="w-full bg-black text-white font-bold py-3 rounded-xl shadow-lg hover:bg-zinc-800 transform hover:scale-105 transition-all">
-                Get in Touch
-              </button>
-            </div>
-          ))}
-        </div>
-
         {/* Bottom CTA */}
-        <div className="bg-gradient-to-br from-black via-zinc-900 to-zinc-800 rounded-[40px] p-8 md:p-12 text-center relative overflow-hidden animate-fade-in-up shadow-2xl">
-          
+        <div className="bg-black rounded-[50px] p-8 md:p-12 text-center relative overflow-hidden animate-fade-in-up shadow-2xl">
           <div className="relative z-10">
             <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
               Have a Project Idea?
             </h2>
-            <p className="text-gray-400 text-lg mb-8 max-w-2xl mx-auto">
+            <p className="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
               Create your project profile and find the perfect team members to bring your vision to life!
             </p>
-            <button className="px-8 py-4 bg-white text-black font-bold rounded-xl shadow-xl hover:bg-gray-100 transform hover:scale-105 transition-all">
+            <button className="px-8 py-4 bg-white text-black font-black rounded-xl shadow-xl hover:bg-gray-200 transform hover:scale-105 transition-all">
               Create Project Profile
             </button>
           </div>
@@ -410,11 +424,25 @@ export default function ProjectPartnerPage() {
             transform: translateY(0);
           }
         }
+        @keyframes pulse-shadow {
+          0%, 100% { box-shadow: 0 0 40px rgba(255, 255, 255, 0.1); }
+          50% { box-shadow: 0 0 60px rgba(255, 255, 255, 0.15); }
+        }
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
         .animate-float {
           animation: float 4s ease-in-out infinite;
         }
         .animate-fade-in-up {
           animation: fade-in-up 0.6s ease-out forwards;
+        }
+        .animate-pulse-shadow {
+          animation: pulse-shadow 3s ease-in-out infinite;
+        }
+        .animate-shimmer {
+          animation: shimmer 2s infinite;
         }
       `}</style>
     </div>
