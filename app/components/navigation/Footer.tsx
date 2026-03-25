@@ -115,7 +115,7 @@ const Footer = () => {
       {/* SECTION 2 */}
       <div className={`py-16 flex flex-col items-center justify-center transition-colors ${isDarkMode ? "bg-[#121212]" : "bg-white"}`}>
         <h2 className={`text-3xl md:text-4xl font-bold mb-6 ${isDarkMode ? "text-white" : "text-black"}`}>
-          Made For Students
+          Made For Students by Students
         </h2>
         <div className="flex gap-6">
           {["linkedin", "fb", "x", "insta"].map((icon) => (
