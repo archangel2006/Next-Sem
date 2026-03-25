@@ -1,60 +1,52 @@
-"use client"
+"use client";
 
-import React from "react"
+import React from "react";
 
-interface StatCardProps {
-  title: string
-  value: string
-  sub?: string
-  extra?: string
-}
+type StatCardProps = {
+  title: string;
+  value: string;
+  sub: string;
+  extra?: string;
+  progress?: number; // ✅ FIX ADDED
+};
 
-const StatCard = ({ title, value, sub, extra }: StatCardProps) => {
+const StatCard: React.FC<StatCardProps> = ({
+  title,
+  value,
+  sub,
+  extra,
+  progress,
+}) => {
   return (
-    <div className="bg-[#0A0A0A] border border-zinc-900 rounded-2xl p-5 space-y-4">
-
+    <div className="bg-zinc-900 rounded-xl p-5 shadow-md">
+      
       {/* Title */}
-      <p className="text-sm text-zinc-500">
-        {title}
-      </p>
+      <p className="text-sm text-zinc-400">{title}</p>
 
-      {/* Main Value */}
-      <div className="flex items-end justify-between">
-        <h2 className="text-2xl font-semibold text-white tracking-tight">
-          {value}
-        </h2>
+      {/* Value */}
+      <h2 className="text-2xl font-semibold mt-1">{value}</h2>
 
-        {sub && (
-          <span className="text-xs text-zinc-500">
-            {sub}
-          </span>
-        )}
-      </div>
+      {/* Sub */}
+      <p className="text-sm text-zinc-500 mt-1">{sub}</p>
 
-      {/* Progress Bar (subtle, no bright colors) */}
-      <div className="w-full h-[2px] bg-zinc-900 rounded-full overflow-hidden">
-        <div
-          className="h-full bg-zinc-600 rounded-full"
-          style={{
-            width:
-              title === "CGPA"
-                ? `${parseFloat(value) * 10}%`
-                : title === "Attendance"
-                ? value
-                : "40%",
-          }}
-        />
-      </div>
-
-      {/* Extra Info */}
+      {/* Extra (optional) */}
       {extra && (
-        <p className="text-xs text-zinc-600">
-          {extra}
-        </p>
+        <p className="text-xs text-zinc-400 mt-1">{extra}</p>
       )}
 
+      {/* Progress Bar (optional) */}
+      {progress !== undefined && (
+        <div className="mt-3">
+          <div className="w-full h-2 bg-zinc-700 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-green-500 transition-all duration-500"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default StatCard
+export default StatCard;
