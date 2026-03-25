@@ -7,7 +7,7 @@ type StatCardProps = {
   value: string;
   sub: string;
   extra?: string;
-  progress?: number; // ✅ FIX ADDED
+  progress?: number;
 };
 
 const StatCard: React.FC<StatCardProps> = ({
