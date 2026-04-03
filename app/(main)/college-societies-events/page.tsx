@@ -3,7 +3,6 @@
 import Header from "./components/college/Header";
 import Calendar from "./components/college/Calendar";
 import SocietyList from "./components/college/SocietyList";
-import SocietyDetails from "./components/college/SocietyDetails";
 
 export default function CollegeSocietiesEventsPage() {
   return (
